@@ -1,0 +1,44 @@
+
+:root{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+  color:#111;
+  background:#f5f5f7;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#f5f5f7;color:#111}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{max-width:720px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) 18px calc(40px + env(safe-area-inset-bottom))}
+header{margin-bottom:22px}
+h1{font-size:34px;line-height:1.1;margin:0 0 6px}
+.subtitle{margin:0;color:#6e6e73}
+.search-card{background:#fff;border-radius:18px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:24px}
+.search-row{display:flex;gap:10px}
+input[type=search]{flex:1;min-width:0;border:1px solid #d2d2d7;border-radius:12px;padding:13px 14px;background:#fff;outline:none}
+input[type=search]:focus{border-color:#8e8e93}
+.primary{border:0;border-radius:12px;padding:0 16px;background:#111;color:#fff}
+.suggestions{display:none;margin-top:10px;border-top:1px solid #ececec}
+.suggestions.active{display:block}
+.suggestion{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 4px;border:0;border-bottom:1px solid #f0f0f0;background:#fff;text-align:left}
+.suggestion:last-child{border-bottom:0}
+.suggestion small{color:#8e8e93}
+section{margin-bottom:26px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+h2{font-size:18px;margin:0}
+.text-btn{border:0;background:transparent;color:#6e6e73;padding:6px 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:0;background:#fff;border-radius:999px;padding:10px 13px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.shopping-list{list-style:none;margin:0;padding:0;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.item{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #ececec}
+.item:last-child{border-bottom:0}
+.check{width:24px;height:24px;border-radius:50%;border:2px solid #c7c7cc;display:grid;place-items:center;background:#fff;flex:0 0 auto}
+.item.done .check{background:#111;border-color:#111;color:#fff}
+.item.done .name{text-decoration:line-through;color:#8e8e93}
+.name{flex:1}
+.delete{border:0;background:transparent;color:#8e8e93;font-size:20px;line-height:1;padding:4px 6px}
+.empty{color:#8e8e93;text-align:center;padding:24px 8px}
+.hidden{display:none}
+@media (max-width:420px){
+  .search-row{align-items:stretch}
+  .primary{padding:0 12px}
+}
