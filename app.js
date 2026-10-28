@@ -19,6 +19,9 @@ const shoppingList = document.getElementById("shoppingList");
 const emptyState = document.getElementById("emptyState");
 const frequent = document.getElementById("frequent");
 const clearDoneBtn = document.getElementById("clearDoneBtn");
+const toast = document.getElementById("toast");
+const toastMessage = document.getElementById("toastMessage");
+const toastUndo = document.getElementById("toastUndo");
 
 function load(key, fallback) {
   try {
@@ -58,19 +61,48 @@ function addProduct(name, remember = true) {
 
   if (!list.some(i => normalize(i.name) === normalize(canonical) && !i.done)) {
     list.push({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()), name: canonical, done: false });
+    usage[canonical] = (usage[canonical] || 0) + 1;
   }
 
-  usage[canonical] = (usage[canonical] || 0) + 1;
   saveAll();
   searchInput.value = "";
   suggestions.classList.remove("active");
   render();
 }
 
-function removeItem(id) {
-  list = list.filter(i => i.id !== id);
+function removeItems(predicate, message) {
+  const removed = list.map((item, index) => ({ item, index })).filter(r => predicate(r.item));
+  if (removed.length === 0) return;
+  list = list.filter(i => !predicate(i));
   saveAll();
   render();
+  showUndo(message, () => {
+    removed.forEach(r => list.splice(r.index, 0, r.item));
+    saveAll();
+    render();
+  });
+}
+
+function removeItem(id) {
+  const item = list.find(i => i.id === id);
+  if (item) removeItems(i => i.id === id, `“${item.name}” verwijderd`);
+}
+
+let undoTimer;
+function showUndo(message, undo) {
+  clearTimeout(undoTimer);
+  toastMessage.textContent = message;
+  toastUndo.onclick = () => {
+    hideToast();
+    undo();
+  };
+  toast.classList.add("active");
+  undoTimer = setTimeout(hideToast, 5000);
+}
+
+function hideToast() {
+  clearTimeout(undoTimer);
+  toast.classList.remove("active");
 }
 
 function toggleItem(id) {
@@ -139,7 +171,9 @@ function renderList() {
   emptyState.classList.toggle("hidden", list.length > 0);
   shoppingList.classList.toggle("hidden", list.length === 0);
 
-  list.forEach(item => {
+  // Open items first, checked-off items at the bottom.
+  const ordered = list.filter(i => !i.done).concat(list.filter(i => i.done));
+  ordered.forEach(item => {
     const li = document.createElement("li");
     li.className = "item" + (item.done ? " done" : "");
 
@@ -181,9 +215,8 @@ searchInput.addEventListener("keydown", e => {
 });
 addCustomBtn.addEventListener("click", () => addProduct(searchInput.value, true));
 clearDoneBtn.addEventListener("click", () => {
-  list = list.filter(i => !i.done);
-  saveAll();
-  render();
+  const count = list.filter(i => i.done).length;
+  removeItems(i => i.done, count === 1 ? "1 item gewist" : `${count} items gewist`);
 });
 
 if ("serviceWorker" in navigator) {
